@@ -56,7 +56,7 @@ while True:
             sys.exit()
         elif event.type == MOUSEBUTTONDOWN:
             (x,y) = event.pos
-            tmp = Ball(Vector(x,y), 10)
+            tmp = Ball(Vector(x,y), 20)
             tmp.vel.setRect(random()*20-10, random()*20-10)
             #tmp.acc.setRect(0, 1)
             tmp.cr=0.98

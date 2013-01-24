@@ -75,7 +75,17 @@ class Ball(Piece):
 
     def _overlapOtherBall(self, other):
         dp = self.pos - other.pos
-        if (dp.mag < self.rad + other.rad):
+        dvel = other.vel - self.vel
+        r = self.rad + other.rad
+        if (dp.mag < r and dvel.mag != 0):
+            (dx, dy) = dp.rect()
+            (du, dv) = dvel.rect()
+            (a, b, c) = (du**2+dv**2, 2*(dx*du+dy*dv), dx**2+dy**2-r**2)
+            print(a, b, c)
+            t = (-b+sqrt(b**2-4*a*c))/(2*a)
+            print(t)
+            self.pos = self.pos - self.vel*t
+            other.pos = other.pos - other.vel*t
             self.vel = Vector(0,0);
             other.vel = Vector(0,0);
             self.acc = Vector(0,0);
