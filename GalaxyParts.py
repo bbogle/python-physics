@@ -65,7 +65,8 @@ class Ball(Piece):
                 t = (u2*dy-v2*dx)/det
                 s = (u1*dy-v1*dx)/det
                 if t <= 1 and t >= 0 and abs(s) <= 1:
-                    t = t - self.rad/self.vel.dot(b.getNorm())
+                    print(t)
+                    #t = t - self.rad/self.vel.dot(b.getNorm())
                     n = b.getNorm()
                     self.pos = self.pos + self.vel*t
                     proj  = n * n.dot(self.vel)
@@ -77,19 +78,31 @@ class Ball(Piece):
         dp = self.pos - other.pos
         dvel = other.vel - self.vel
         r = self.rad + other.rad
-        if (dp.mag < r and dvel.mag != 0):
-            (dx, dy) = dp.rect()
-            (du, dv) = dvel.rect()
-            (a, b, c) = (du**2+dv**2, 2*(dx*du+dy*dv), dx**2+dy**2-r**2)
-            print(a, b, c)
-            t = (-b+sqrt(b**2-4*a*c))/(2*a)
-            print(t)
-            self.pos = self.pos - self.vel*t
-            other.pos = other.pos - other.vel*t
-            self.vel = Vector(0,0);
-            other.vel = Vector(0,0);
-            self.acc = Vector(0,0);
-            other.acc = Vector(0,0);
+        (dx, dy) = dp.rect()
+        (du, dv) = dvel.rect()
+        (a, b, c) = (du**2+dv**2, 2*(dx*du+dy*dv), dx**2+dy**2-r**2)
+        descriminant = b**2 - 4*a*c
+        if (descriminant >= 0 and a != 0):
+            t = (-b+sqrt(descriminant))/(2*a)
+            t2 = (-b-sqrt(descriminant))/(2*a)
+            if (dp.mag < r):
+                self.pos = self.pos - self.vel*t
+                other.pos = other.pos - other.vel*t
+                self._stop()
+                other._stop()
+            elif (t >= 0 and t < 1):
+                if t2 > 0: 
+                    goodt = t2 
+                else:      
+                    goodt=t1
+                self.pos = self.pos + self.vel*t
+                other.pos = other.pos + other.vel*t
+                self._stop()
+                other._stop()
+
+    def _stop(self):
+        self.vel = Vector(0,0);
+        self.acc = Vector(0,0);
 
     def collide(self, other):
         self._overlapOtherBall(other)
@@ -110,7 +123,6 @@ class Wall:
         vec = p2-p1
         vec.setRect(vec.x, -vec.y)
         self.angle = vec.theta
-        print(self.angle)
 
     def getNorm(self):
         v = self.p2-self.p1

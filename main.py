@@ -31,7 +31,7 @@ walls = [Wall(Vector(pad+400, HEIGHT-pad), Vector(WIDTH-pad, HEIGHT-pad)),
 while True:
     win.fill(white)
 
-    for i in range(0, len(gameobjects)-1):
+    for i in range(0, len(gameobjects)):
         obj = gameobjects[i]
         (x,y) = obj.pos.rect()
 
@@ -39,7 +39,7 @@ while True:
             gameobjects.remove(obj)
             continue
 
-        for j in range(i+1, len(gameobjects)-1):
+        for j in range(i+1, len(gameobjects)):
             other = gameobjects[j]
             obj.collide(other)
 
@@ -55,14 +55,15 @@ while True:
             pygame.quit()
             sys.exit()
         elif event.type == MOUSEBUTTONDOWN:
+            print("foo")
             (x,y) = event.pos
-            tmp = Ball(Vector(x,y), 20)
-            tmp.vel.setRect(random()*20-10, random()*20-10)
+            tmp = Ball(Vector(x,y), 7)
+            tmp.vel.setRect(-3, -10)
             #tmp.acc.setRect(0, 1)
             tmp.cr=0.98
             tmp.fr=1
             gameobjects.append(tmp)
 
     pygame.display.update()
-    fpsClock.tick(45)
+    fpsClock.tick(30)
 
