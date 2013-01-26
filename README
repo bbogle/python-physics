@@ -24,3 +24,6 @@ and direction of the vector.
 GalaxyParts.py contains all the objects and specific physics
 for the simulation. Eventually, I would like to move all the
 physics related parts to Physics.py. 
+
+Physics.py is meanst to encapsulate all the physics calculations.
+So far it doesn't contain much.
