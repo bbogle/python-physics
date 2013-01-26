@@ -28,6 +28,9 @@ class Piece:
         oldvel = self.vel
         self.vel = self.vel + self.acc * t
         self.pos = self.pos + (self.vel + oldvel) * 0.5 * t
+
+    def draw(self, win):
+        raise NoImplementationError("Draw function not implemented")
          
 
 class Ball(Piece):
