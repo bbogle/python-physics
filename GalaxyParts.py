@@ -1,4 +1,3 @@
-#hoo
 from __future__ import division
 from math import *
 from Vector import *
