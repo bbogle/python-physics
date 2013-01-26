@@ -53,13 +53,13 @@ while True:
             sys.exit()
         elif event.type == MOUSEBUTTONDOWN:
             (x,y) = event.pos
-            tmp = Ball(Vector(x,y), 3)
-            tmp.vel.setRect(20, 10)#random()*20-10, random()*20-10)
+            tmp = Ball(Vector(x,y), 10)
+            tmp.vel.setRect(random()*20-10, random()*20-10)
             tmp.acc.setRect(0, 1)
-            tmp.cr=0.98
-            tmp.fr=1
+            tmp.cr=0.6
+            tmp.fr=0.95
             gameobjects.append(tmp)
 
     pygame.display.update()
-    fpsClock.tick(3)
+    fpsClock.tick(30)
 

@@ -91,11 +91,29 @@ class Ball(Piece):
             if (dp.mag < r):
                 self.pos = self.pos - self.vel*t
                 other.pos = other.pos - other.vel*t
+                self._react(other)
             elif (t >= 0 and t <= 1):
                 if t2 > 0: goodt = t2 
                 else: goodt = t
                 self.pos = self.pos + self.vel*t
                 other.pos = other.pos + other.vel*t
+                self._react(other)
+
+    def _react(self, other):
+        dp = other.pos - self.pos
+        dp.setMag(1)
+        u1 = self.vel.dot(dp)
+        u2 = other.vel.dot(dp)
+        m1 = self.mass
+        m2 = other.mass
+        cr = (self.cr + other.cr)/2
+
+        v1 = (m1*u1+m2*u2 + cr*m2*(u2-u1))/(m1+m2)
+        v2 = (m1*u1+m2*u2 + cr*m1*(u1-u2))/(m1+m2)
+
+        self.vel = self.vel - dp*u1 + dp*v1
+        other.vel = other.vel - dp*u2 + dp*v2
+
 
     def collide(self, other):
         self._overlapOtherBall(other)
