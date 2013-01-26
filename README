@@ -1,0 +1,26 @@
+Physics Engine Written In Python
+Author: Syed Zahir Bokhari
+Date: Jan 21, 2013
+
+This is a simple 2d ridgid body physics engine.
+I am using the pygame (http://www.pygame.org) library
+to power the graphics.
+
+To run the demo, simply run:
+$ python main.py
+
+main.py contains all the setup to generate the window,
+and the main game loop to draw the active objects.
+This loop is meant to contol the game. It makes the 
+calls to the game objects's move() and draw() functions,
+as well as approrpiatly calling the function sto check
+for and react to collisions.
+    
+Vector.py contains only the Vector class. This is a simple
+implementation of a two dimentional vector, with elements
+x and y. It also has methods for extracting the magnitude
+and direction of the vector.
+
+GalaxyParts.py contains all the objects and specific physics
+for the simulation. Eventually, I would like to move all the
+physics related parts to Physics.py. 
