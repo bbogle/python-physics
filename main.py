@@ -20,12 +20,13 @@ black = pygame.Color(0,0,0)
 win = pygame.display.set_mode((WIDTH, HEIGHT))
 
 gameobjects = []
-pad = 20
-walls = [Wall(Vector(pad+400, HEIGHT-pad), Vector(WIDTH-pad, HEIGHT-pad)),
-         Wall(Vector(WIDTH-pad, HEIGHT-pad), Vector(WIDTH-pad, pad)),
-         Wall(Vector(WIDTH-pad, pad), Vector(pad, pad)),
-         Wall(Vector(pad, pad), Vector(pad, pad+200)),
-         Wall(Vector(pad, pad+200), Vector(pad+400, HEIGHT-pad)),
+pad = 40
+ov = 0
+walls = [Wall(Vector(pad-ov+400, HEIGHT-pad), Vector(WIDTH-pad+ov, HEIGHT-pad)),
+         Wall(Vector(WIDTH-pad, HEIGHT-pad+ov), Vector(WIDTH-pad, pad-ov)),
+         Wall(Vector(WIDTH-pad+ov, pad), Vector(pad-ov, pad)),
+         Wall(Vector(pad, pad-ov), Vector(pad, pad+200+ov)),
+         Wall(Vector(pad-ov, pad+200), Vector(pad+400, HEIGHT-pad+ov)),
          Wall(Vector(200, 200), Vector(WIDTH-pad, 200))]
 
 while True:
@@ -34,10 +35,6 @@ while True:
     for i in range(0, len(gameobjects)):
         obj = gameobjects[i]
         (x,y) = obj.pos.rect()
-
-        if (x<0 or y<0 or x>WIDTH or y>HEIGHT):
-            gameobjects.remove(obj)
-            continue
 
         for j in range(i+1, len(gameobjects)):
             other = gameobjects[j]
@@ -55,15 +52,14 @@ while True:
             pygame.quit()
             sys.exit()
         elif event.type == MOUSEBUTTONDOWN:
-            print("foo")
             (x,y) = event.pos
-            tmp = Ball(Vector(x,y), 7)
-            tmp.vel.setRect(-3, -10)
-            #tmp.acc.setRect(0, 1)
+            tmp = Ball(Vector(x,y), 3)
+            tmp.vel.setRect(20, 10)#random()*20-10, random()*20-10)
+            tmp.acc.setRect(0, 1)
             tmp.cr=0.98
             tmp.fr=1
             gameobjects.append(tmp)
 
     pygame.display.update()
-    fpsClock.tick(30)
+    fpsClock.tick(3)
 

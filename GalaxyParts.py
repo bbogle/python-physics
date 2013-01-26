@@ -65,8 +65,8 @@ class Ball(Piece):
                 t = (u2*dy-v2*dx)/det
                 s = (u1*dy-v1*dx)/det
                 if t <= 1 and t >= 0 and abs(s) <= 1:
+                    t = t - self.rad/self.vel.dot(b.getNorm())
                     print(t)
-                    #t = t - self.rad/self.vel.dot(b.getNorm())
                     n = b.getNorm()
                     self.pos = self.pos + self.vel*t
                     proj  = n * n.dot(self.vel)
@@ -88,21 +88,11 @@ class Ball(Piece):
             if (dp.mag < r):
                 self.pos = self.pos - self.vel*t
                 other.pos = other.pos - other.vel*t
-                self._stop()
-                other._stop()
-            elif (t >= 0 and t < 1):
-                if t2 > 0: 
-                    goodt = t2 
-                else:      
-                    goodt=t1
+            elif (t >= 0 and t <= 1):
+                if t2 > 0: goodt = t2 
+                else: goodt = t
                 self.pos = self.pos + self.vel*t
                 other.pos = other.pos + other.vel*t
-                self._stop()
-                other._stop()
-
-    def _stop(self):
-        self.vel = Vector(0,0);
-        self.acc = Vector(0,0);
 
     def collide(self, other):
         self._overlapOtherBall(other)
