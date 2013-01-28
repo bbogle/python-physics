@@ -13,7 +13,8 @@ class VectorDraw(Vector):
     def draw(self, surf, color=pygame.Color(0,0,0)):
         pygame.draw.line(surf, color, (self.px,self.py), 
                          (self.px + self.x, self.py + self.y))
-        pygame.draw.circle(surf, color, (self.px + self.x, self.py + self.y), 2)
+        pygame.draw.circle(surf, color, 
+                           (int(self.px + self.x), int(self.py + self.y)), 2)
 
 
 class Piece:
@@ -118,7 +119,7 @@ class Ball(Piece):
         self._checkFutureWall(walls)
 
     def draw(self, surf):
-        pygame.draw.circle(surf, self.color, self.pos.rect(), self.rad)
+        pygame.draw.circle(surf, self.color, (int(self.pos.x), int(self.pos.y)), int(self.rad))
         #vd = VectorDraw(self.vel, self.pos.x, self.pos.y)
         #vd.draw(surf)
 
