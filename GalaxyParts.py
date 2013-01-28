@@ -76,7 +76,7 @@ class Ball(Piece):
                     self.vel = perp*self.fr - proj*self.cr
                     self.pos = self.pos + self.vel * (1-t)
 
-    def _overlapOtherBall(self, other):
+    def collide(self, other):
         dp = self.pos - other.pos
         dvel = other.vel - self.vel
         r = self.rad + other.rad
@@ -90,15 +90,15 @@ class Ball(Piece):
             if (dp.mag < r):
                 self.pos = self.pos - self.vel*t
                 other.pos = other.pos - other.vel*t
-                self._react(other)
+                return True
             elif (t >= 0 and t <= 1):
                 if t2 > 0: goodt = t2 
                 else: goodt = t
                 self.pos = self.pos + self.vel*t
                 other.pos = other.pos + other.vel*t
-                self._react(other)
+                return True
 
-    def _react(self, other):
+    def bounceOff(self, other):
         dp = other.pos - self.pos
         dp.setMag(1)
         u1 = self.vel.dot(dp)
@@ -113,18 +113,14 @@ class Ball(Piece):
         self.vel = self.vel - dp*u1 + dp*v1
         other.vel = other.vel - dp*u2 + dp*v2
 
-
-    def collide(self, other):
-        self._overlapOtherBall(other)
-
     def bounderyCheck(self, walls):
         self._checkWallOverlap(walls)
         self._checkFutureWall(walls)
 
     def draw(self, surf):
         pygame.draw.circle(surf, self.color, self.pos.rect(), self.rad)
-        vd = VectorDraw(self.vel, self.pos.x, self.pos.y)
-        vd.draw(surf)
+        #vd = VectorDraw(self.vel, self.pos.x, self.pos.y)
+        #vd.draw(surf)
 
 class Wall:
     def __init__(self, p1, p2):
