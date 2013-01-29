@@ -5,6 +5,8 @@ import pygame
 import Physics as Phy
 
 class VectorDraw(Vector):
+    """Simple drawable arrow Vector class"""
+
     def __init__(self, vec, x=0, y=0):
         Vector.__init__(self, vec.x, vec.y)
         self.px = x
@@ -16,8 +18,10 @@ class VectorDraw(Vector):
         pygame.draw.circle(surf, color, 
                            (int(self.px + self.x), int(self.py + self.y)), 2)
 
-
 class Piece:
+    """This is an abstract class that is meant to hold all the
+    general properties of all physics objects."""
+
     def __init__(self, pos=None, mass=10, vel=None, acc=None):
         self.pos = pos or Vector()
         self.vel = vel or Vector()
@@ -25,15 +29,20 @@ class Piece:
         self.mass = mass
         
     def move(self, t=Phy.CONST_T):
+        """Updates the position and velocity of the Piece"""
         oldvel = self.vel
         self.vel = self.vel + self.acc * t
         self.pos = self.pos + (self.vel + oldvel) * 0.5 * t
 
     def draw(self, win):
+        """Draws the Piece on the supplied surface.
+           To be implemented by the child class"""
         raise NoImplementationError("Draw function not implemented")
          
 
 class Ball(Piece):
+    """A BallPiece class that can bounce of other BallPieces and WallsPieces"""
+
     def __init__(self, pos, rad=10, vel=None, acc=None, cr=1, fr=1):
         Piece.__init__(self, pos, 1, vel, acc)
         self.rad = rad
@@ -42,6 +51,8 @@ class Ball(Piece):
         self.fr = fr
 
     def _checkWallOverlap(self, walls):
+        """Checks whether this ball is overlapping one of the walls
+           in the supplied list"""
         for b in walls:
             n = b.getNorm()             #Normal to the line away from bouncing side
             p = b.getMid()-self.pos     #vector from ball to center of line
@@ -57,6 +68,8 @@ class Ball(Piece):
                     self.pos = self.pos + self.vel * (1-t)
 
     def _checkFutureWall(self, walls):
+        """Checks whether this ball will cross a wall in the supplied list
+           in the nect time step"""
         for b in walls:
             (x1, y1) = self.pos.rect()
             (u1, v1) = self.vel.rect()
@@ -78,6 +91,8 @@ class Ball(Piece):
                     self.pos = self.pos + self.vel * (1-t)
 
     def collide(self, other):
+        """Checks if this ball is colliding or will collide with the other ball
+           supplied"""
         dp = self.pos - other.pos
         dvel = other.vel - self.vel
         r = self.rad + other.rad
@@ -100,6 +115,7 @@ class Ball(Piece):
                 return True
 
     def bounceOff(self, other):
+        """Adjust the speed of this ball and the other as if they were colliding"""
         dp = other.pos - self.pos
         dp.setMag(1)
         u1 = self.vel.dot(dp)
@@ -115,15 +131,20 @@ class Ball(Piece):
         other.vel = other.vel - dp*u2 + dp*v2
 
     def bounderyCheck(self, walls):
+        """Function used to check if this ball makes a collision with a wall
+        in the supplied list"""
         self._checkWallOverlap(walls)
         self._checkFutureWall(walls)
 
     def draw(self, surf):
-        pygame.draw.circle(surf, self.color, (int(self.pos.x), int(self.pos.y)), int(self.rad))
-        #vd = VectorDraw(self.vel, self.pos.x, self.pos.y)
-        #vd.draw(surf)
+        """Draws the Ball"""
+        pygame.draw.circle(surf, self.color, 
+            (int(self.pos.x), int(self.pos.y)), int(self.rad))
 
 class Wall:
+    """General wall object used to set up boundries and platforms
+       in the simulation world"""
+
     def __init__(self, p1, p2):
         self.p1 = p1
         self.p2 = p2
@@ -132,16 +153,19 @@ class Wall:
         self.angle = vec.theta
 
     def getNorm(self):
+        """Return a vector normal to the line"""
         v = self.p2-self.p1
         v.setMag(1)
         v.setRect(-v.y, v.x)
         return v
 
     def getMid(self):
+        """Returns a vector representing the midpoint of the line"""
         return (self.p1+self.p2)*0.5
         
 
     def draw(self, surf, color=pygame.Color(0, 0, 0)):
+        """Draws the line"""
         pygame.draw.line(surf, color, self.p1.rect(), self.p2.rect())
         mid = (self.p1 + self.p2) * 0.5
         ac = 10

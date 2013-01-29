@@ -22,10 +22,10 @@ win = pygame.display.set_mode((WIDTH, HEIGHT))
 gameobjects = []
 pad = 5
 ov = 0
-#walls = [Wall(Vector(pad-ov, HEIGHT-pad), Vector(WIDTH-pad+ov, HEIGHT-pad)),
-#         Wall(Vector(WIDTH-pad, HEIGHT-pad+ov), Vector(WIDTH-pad, pad-ov)),
-#         Wall(Vector(WIDTH-pad+ov, pad), Vector(pad-ov, pad)),
-#         Wall(Vector(pad, pad-ov), Vector(pad, HEIGHT-pad+ov))]
+walls = [Wall(Vector(pad-ov, HEIGHT-pad), Vector(WIDTH-pad+ov, HEIGHT-pad)),
+         Wall(Vector(WIDTH-pad, HEIGHT-pad+ov), Vector(WIDTH-pad, pad-ov)),
+         Wall(Vector(WIDTH-pad+ov, pad), Vector(pad-ov, pad)),
+         Wall(Vector(pad, pad-ov), Vector(pad, HEIGHT-pad+ov))]
 #         Wall(Vector(pad-ov, pad+200), Vector(pad+400, HEIGHT-pad+ov))
 #         Wall(Vector(200, 200), Vector(WIDTH-pad, 200))]
 
@@ -58,12 +58,12 @@ while True:
             other.acc += gforce*(-1/other.mass)
 
         obj.move()
-        #obj.bounderyCheck(walls)
+        obj.bounderyCheck(walls)
         obj.draw(win)
         obj.acc = Vector(0, 0)
 
-   # for obj in walls:
-   #     obj.draw(win)
+    for obj in walls:
+        obj.draw(win)
 
     for event in pygame.event.get():
         if event.type == QUIT:
@@ -75,7 +75,7 @@ while True:
             tmp = Ball(Vector(x,y), tm*2)
             tmp.vel.setRect(0, 0)#random()*20-10, random()*20-10)
             #tmp.acc.setRect(0, 1)
-            tmp.cr=0.9
+            tmp.cr=1
             tmp.fr=1
             tmp.mass = tm
             gameobjects.append(tmp)
