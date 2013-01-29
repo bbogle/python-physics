@@ -71,10 +71,10 @@ class Ball(Piece):
         """Checks whether this ball will cross a wall in the supplied list
            in the nect time step"""
         for b in walls:
-            (x1, y1) = self.pos.rect()
-            (u1, v1) = self.vel.rect()
-            (x2, y2) = b.getMid().rect()
-            (u2, v2) = (b.p1 - b.getMid()).rect()
+            (x1, y1) = self.pos.coords()
+            (u1, v1) = self.vel.coords()
+            (x2, y2) = b.getMid().coords()
+            (u2, v2) = (b.p1 - b.getMid()).coords()
             det = u2*v1-u1*v2
             if det != 0:
                 (dx, dy) = (x2-x1, y2-y1)
@@ -96,8 +96,8 @@ class Ball(Piece):
         dp = self.pos - other.pos
         dvel = other.vel - self.vel
         r = self.rad + other.rad
-        (dx, dy) = dp.rect()
-        (du, dv) = dvel.rect()
+        (dx, dy) = dp.coords()
+        (du, dv) = dvel.coords()
         (a, b, c) = (du**2+dv**2, 2*(dx*du+dy*dv), dx**2+dy**2-r**2)
         descriminant = b**2 - 4*a*c
         if (descriminant >= 0 and a != 0):
@@ -117,7 +117,7 @@ class Ball(Piece):
     def bounceOff(self, other):
         """Adjust the speed of this ball and the other as if they were colliding"""
         dp = other.pos - self.pos
-        dp.setMag(1)
+        dp.mag = 1
         u1 = self.vel.dot(dp)
         u2 = other.vel.dot(dp)
         m1 = self.mass
@@ -149,14 +149,14 @@ class Wall:
         self.p1 = p1
         self.p2 = p2
         vec = p2-p1
-        vec.setRect(vec.x, -vec.y)
+        (vec.x, vec.y) = (vec.x, -vec.y)
         self.angle = vec.theta
 
     def getNorm(self):
         """Return a vector normal to the line"""
         v = self.p2-self.p1
-        v.setMag(1)
-        v.setRect(-v.y, v.x)
+        v.mag = 1
+        (v.x, v.y) = (-v.y, v.x)
         return v
 
     def getMid(self):
@@ -166,7 +166,7 @@ class Wall:
 
     def draw(self, surf, color=pygame.Color(0, 0, 0)):
         """Draws the line"""
-        pygame.draw.line(surf, color, self.p1.rect(), self.p2.rect())
+        pygame.draw.line(surf, color, self.p1.coords(), self.p2.coords())
         mid = (self.p1 + self.p2) * 0.5
         ac = 10
         area = pygame.Rect(mid.x-ac, mid.y-ac, 2*ac, 2*ac)

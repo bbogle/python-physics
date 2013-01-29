@@ -43,7 +43,7 @@ while True:
 
     for i in range(0, len(gameobjects)):
         obj = gameobjects[i]
-        (x,y) = obj.pos.rect()
+        (x,y) = obj.pos.coords()
 
         for j in range(i+1, len(gameobjects)):
             other = gameobjects[j]
@@ -71,11 +71,11 @@ while True:
             sys.exit()
         elif event.type == MOUSEBUTTONDOWN:
             (x,y) = event.pos
-            tm = random()*5
-            tmp = Ball(Vector(x,y), tm*2)
-            tmp.vel.setRect(0, 0)#random()*20-10, random()*20-10)
+            tm = random()*2 + 1
+            tmp = Ball(Vector(x,y), tm*3)
+            (tmp.x, tmp.y) = (0, 0)#random()*20-10, random()*20-10)
             #tmp.acc.setRect(0, 1)
-            tmp.cr=1
+            tmp.cr=0.9
             tmp.fr=1
             tmp.mass = tm
             gameobjects.append(tmp)

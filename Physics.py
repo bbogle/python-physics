@@ -10,7 +10,7 @@ def forceOfGravity(p1, p2, m1, m2):
        with their respective masses"""
     force = (CONST_G * m1 * m2) / ((p1-p2).mag)**2
     v = p2 - p1
-    v.setMag(force)
+    v.mag = force
     return v
 
 def nextPos(pos, vel, acc):
