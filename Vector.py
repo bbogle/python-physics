@@ -45,6 +45,10 @@ class Vector(object):
         """Returns a tuple representing the cartesian coordinates
            of the vector"""
         return (self.x, self.y)
+    
+    def int_coords(self):
+        """Returns a tuple of (int(x), int(y)). Useful for drawing"""
+        return (int(self.x), int(self.y))
 
     @property
     def x(self): 

@@ -9,14 +9,13 @@ class VectorDraw(Vector):
 
     def __init__(self, vec, x=0, y=0):
         Vector.__init__(self, vec.x, vec.y)
-        self.px = x
-        self.py = y
+        self.pos = Vector(x, y)
 
     def draw(self, surf, color=pygame.Color(0,0,0)):
-        pygame.draw.line(surf, color, (self.px,self.py), 
-                         (self.px + self.x, self.py + self.y))
-        pygame.draw.circle(surf, color, 
-                           (int(self.px + self.x), int(self.py + self.y)), 2)
+        pygame.draw.line(surf, color, 
+                         (self.pos.x, self.pos.y), 
+                         (self.pos.x + self.x, self.pos.y + self.y))
+        pygame.draw.circle(surf, color, (self + self.pos).int_coords(), 2)
 
 class Piece:
     """This is an abstract class that is meant to hold all the
@@ -58,14 +57,15 @@ class Ball(Piece):
             p = b.getMid()-self.pos     #vector from ball to center of line
             dist = abs(p.dot(n))        #distance from center of ball to the line
             l = p - n*p.dot(n)          #perp = p - proj on normal
-            if dist < self.rad and l.mag < ((b.p2-b.p1).mag/2):
-                if self.vel.mag != 0:
-                    t = abs((self.rad-dist)/n.dot(self.vel))
-                    self.pos = self.pos - self.vel*t
-                    proj  = n * n.dot(self.vel)
-                    perp = self.vel - proj
-                    self.vel = perp*self.fr - proj*self.cr
-                    self.pos = self.pos + self.vel * (1-t)
+            if (dist < self.rad and 
+                l.mag < ((b.p2-b.p1).mag/2) and
+                self.vel.mag != 0):
+               t = abs((self.rad-dist)/n.dot(self.vel))
+               self.pos = self.pos - self.vel*t
+               proj  = n * n.dot(self.vel)
+               perp = self.vel - proj
+               self.vel = perp*self.fr - proj*self.cr
+               self.pos = self.pos + self.vel * (1-t)
 
     def _checkFutureWall(self, walls):
         """Checks whether this ball will cross a wall in the supplied list
