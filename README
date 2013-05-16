@@ -2,20 +2,25 @@ Physics Engine Written In Python
 Author: Syed Zahir Bokhari
 Date: Jan 21, 2013
 
-This is a simple 2d ridgid body physics engine.
-I am using the pygame (http://www.pygame.org) library
+This is a simple 2D ridgid body physics engine,
+made using the pygame (http://www.pygame.org) library
 to power the graphics.
 
 To run the demo, simply run:
 $ python main.py
 
+The current implementation only supports circles. There
+can be universal gravity or per object gravity. Ball
+collisions are done with subdevided time to maintain realism.
+Hard walls can also be set up at arbitrary angles.
+
 main.py contains all the setup to generate the window,
 and the main game loop to draw the active objects.
-This loop is meant to contol the game. It makes the 
+This loop is meant to contol the game. It makes the
 calls to the game objects's move() and draw() functions,
 as well as approrpiatly calling the function sto check
 for and react to collisions.
-    
+
 Vector.py contains only the Vector class. This is a simple
 implementation of a two dimentional vector, with elements
 x and y. It also has methods for extracting the magnitude
@@ -23,7 +28,7 @@ and direction of the vector.
 
 GalaxyParts.py contains all the objects and specific physics
 for the simulation. Eventually, I would like to move all the
-physics related parts to Physics.py. 
+physics related parts to Physics.py.
 
 Physics.py is meanst to encapsulate all the physics calculations.
 So far it doesn't contain much.
