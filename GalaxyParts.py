@@ -11,9 +11,9 @@ class VectorDraw(Vector):
         self.py = y
 
     def draw(self, surf, color=pygame.Color(0,0,0)):
-        pygame.draw.line(surf, color, (self.px,self.py), 
+        pygame.draw.line(surf, color, (self.px,self.py),
                          (self.px + self.x, self.py + self.y))
-        pygame.draw.circle(surf, color, 
+        pygame.draw.circle(surf, color,
                            (int(self.px + self.x), int(self.py + self.y)), 2)
 
 
@@ -23,7 +23,7 @@ class Piece:
         self.vel = vel or Vector()
         self.acc = acc or Vector()
         self.mass = mass
-        
+
     def move(self, t=Phy.CONST_T):
         oldvel = self.vel
         self.vel = self.vel + self.acc * t
@@ -31,21 +31,21 @@ class Piece:
 
     def draw(self, win):
         raise NoImplementationError("Draw function not implemented")
-         
+
 
 class Ball(Piece):
-    def __init__(self, pos, rad=10, vel=None, acc=None, cr=1, fr=1):
+    def __init__(self, pos, rad=10, vel=None, acc=None, coeff_restitution=1, coeff_friction=1):
         Piece.__init__(self, pos, 1, vel, acc)
         self.rad = rad
         self.color=pygame.Color(255, 0, 0)
-        self.cr = cr
-        self.fr = fr
+        self.coeff_restitution = coeff_restitution
+        self.coeff_friction = coeff_friction
 
     def _checkWallOverlap(self, walls):
         for b in walls:
-            n = b.getNorm()             #Normal to the line away from bouncing side
-            p = b.getMid()-self.pos     #vector from ball to center of line
-            dist = abs(p.dot(n))        #distance from center of ball to the line
+            n = b.getNorm()             #Normal to the line away coeff_frictionom bouncing side
+            p = b.getMid()-self.pos     #vector coeff_frictionom ball to center of line
+            dist = abs(p.dot(n))        #distance coeff_frictionom center of ball to the line
             l = p - n*p.dot(n)          #perp = p - proj on normal
             if dist < self.rad and l.mag < ((b.p2-b.p1).mag/2):
                 if self.vel.mag != 0:
@@ -53,7 +53,7 @@ class Ball(Piece):
                     self.pos = self.pos - self.vel*t
                     proj  = n * n.dot(self.vel)
                     perp = self.vel - proj
-                    self.vel = perp*self.fr - proj*self.cr
+                    self.vel = perp*self.coeff_friction - proj*self.coeff_restitution
                     self.pos = self.pos + self.vel * (1-t)
 
     def _checkFutureWall(self, walls):
@@ -69,12 +69,11 @@ class Ball(Piece):
                 s = (u1*dy-v1*dx)/det
                 if t <= 1 and t >= 0 and abs(s) <= 1:
                     t = t - self.rad/self.vel.dot(b.getNorm())
-                    print(t)
                     n = b.getNorm()
                     self.pos = self.pos + self.vel*t
                     proj  = n * n.dot(self.vel)
                     perp = self.vel - proj
-                    self.vel = perp*self.fr - proj*self.cr
+                    self.vel = perp*self.coeff_friction - proj*self.coeff_restitution
                     self.pos = self.pos + self.vel * (1-t)
 
     def collide(self, other):
@@ -84,37 +83,37 @@ class Ball(Piece):
         (dx, dy) = dp.rect()
         (du, dv) = dvel.rect()
         (a, b, c) = (du**2+dv**2, 2*(dx*du+dy*dv), dx**2+dy**2-r**2)
-        descriminant = b**2 - 4*a*c
-        if (descriminant >= 0 and a != 0):
-            t = (-b+sqrt(descriminant))/(2*a)
-            t2 = (-b-sqrt(descriminant))/(2*a)
+        descoeff_restitutioniminant = b**2 - 4*a*c
+        if (descoeff_restitutioniminant >= 0 and a != 0):
+            t = (-b+sqrt(descoeff_restitutioniminant))/(2*a)
+            t2 = (-b-sqrt(descoeff_restitutioniminant))/(2*a)
             if (dp.mag < r):
                 self.pos = self.pos - self.vel*t
                 other.pos = other.pos - other.vel*t
                 return True
             elif (t >= 0 and t <= 1):
-                if t2 > 0: goodt = t2 
+                if t2 > 0: goodt = t2
                 else: goodt = t
                 self.pos = self.pos + self.vel*t
                 other.pos = other.pos + other.vel*t
                 return True
 
-    def bounceOff(self, other):
+    def bounce_off(self, other):
         dp = other.pos - self.pos
         dp.setMag(1)
         u1 = self.vel.dot(dp)
         u2 = other.vel.dot(dp)
         m1 = self.mass
         m2 = other.mass
-        cr = (self.cr + other.cr)/2
+        coeff_restitution = (self.coeff_restitution + other.coeff_restitution)/2
 
-        v1 = (m1*u1+m2*u2 + cr*m2*(u2-u1))/(m1+m2)
-        v2 = (m1*u1+m2*u2 + cr*m1*(u1-u2))/(m1+m2)
+        v1 = (m1*u1+m2*u2 + coeff_restitution*m2*(u2-u1))/(m1+m2)
+        v2 = (m1*u1+m2*u2 + coeff_restitution*m1*(u1-u2))/(m1+m2)
 
         self.vel = self.vel - dp*u1 + dp*v1
         other.vel = other.vel - dp*u2 + dp*v2
 
-    def bounderyCheck(self, walls):
+    def boundery_check(self, walls):
         self._checkWallOverlap(walls)
         self._checkFutureWall(walls)
 
@@ -128,18 +127,18 @@ class Wall:
         self.p1 = p1
         self.p2 = p2
         vec = p2-p1
-        vec.setRect(vec.x, -vec.y)
+        vec.set_rect(vec.x, -vec.y)
         self.angle = vec.theta
 
     def getNorm(self):
         v = self.p2-self.p1
         v.setMag(1)
-        v.setRect(-v.y, v.x)
+        v.set_rect(-v.y, v.x)
         return v
 
     def getMid(self):
         return (self.p1+self.p2)*0.5
-        
+
 
     def draw(self, surf, color=pygame.Color(0, 0, 0)):
         pygame.draw.line(surf, color, self.p1.rect(), self.p2.rect())

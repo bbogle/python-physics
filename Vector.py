@@ -37,7 +37,7 @@ class Vector:
         self.theta = t
         self._updateRect()
 
-    def setRect(self, x, y):
+    def set_rect(self, x, y):
         self.x = x
         self.y = y
         self._updatePol()
